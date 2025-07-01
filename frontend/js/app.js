@@ -258,13 +258,22 @@ class ModernReportGenerator {
             let validScores = 0;
 
             subjects.forEach(subject => {
-                const scoreStr = student[subject]?.toString().replace(/[^\d.]/g, '');
-                const score = parseFloat(scoreStr) || 0;
-                console.log(`处理科目 ${subject}: 原始值="${student[subject]}" -> 处理后=${score}`);
-                student[subject] = score; // 标准化分数格式
-                if (score > 0) {
-                    totalScore += score;
-                    validScores++;
+                const originalValue = student[subject];
+                console.log(`处理科目 ${subject}: 原始值="${originalValue}"`);
+                
+                // 保持原始值不变，用于显示
+                // 但对于计算总分，只处理数字值
+                if (originalValue !== undefined && originalValue !== null && originalValue !== '') {
+                    const scoreStr = originalValue.toString().replace(/[^\d.]/g, '');
+                    const score = parseFloat(scoreStr);
+                    
+                    if (!isNaN(score) && score > 0) {
+                        totalScore += score;
+                        validScores++;
+                        console.log(`科目 ${subject}: 数字分数=${score}，累加到总分`);
+                    } else {
+                        console.log(`科目 ${subject}: 非数字值="${originalValue}"，不参与总分计算`);
+                    }
                 }
             });
 
@@ -304,7 +313,7 @@ class ModernReportGenerator {
 
         // 识别成绩相关的列（包含"成绩"字样的列或者是已知的科目名称）
         const knownSubjects = [
-            '语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '政治',
+            '语文', '数学', '英语', '科学',
             '体育', '音乐', '美术', '信息技术', '劳动技术', '综合实践'
         ];
 
@@ -351,7 +360,7 @@ class ModernReportGenerator {
         tbody.innerHTML = '';
 
         // 准备显示的列
-        const displayColumns = ['姓名', '学号', '班级', ...this.studentsData[0].subjects.slice(0, 5), '总分', '平均分', '排名'];
+        const displayColumns = ['姓名', '班级', ...this.studentsData[0].subjects.slice(0, 5), '总分', '平均分', '排名'];
         
         // 生成表头
         const headerRow = document.createElement('tr');
@@ -427,7 +436,7 @@ class ModernReportGenerator {
             this.studentsData.forEach((student, index) => {
                 const option = document.createElement('option');
                 option.value = index;
-                option.textContent = `${student.姓名} (${student.学号 || '无学号'})`;
+                option.textContent = `${student.姓名} (${student.班级 || ''})`;
                 studentSelect.appendChild(option);
             });
 
@@ -491,23 +500,31 @@ class ModernReportGenerator {
             ];
 
             for (const field of possibleFields) {
-                if (student[field] && student[field] !== '') {
-                    return parseFloat(student[field]) || 0;
+                if (student[field] !== undefined && student[field] !== null && student[field] !== '') {
+                    const value = student[field];
+                    // 如果是文本，直接返回
+                    if (typeof value === 'string' && isNaN(parseFloat(value))) {
+                        return value;
+                    }
+                    // 如果是数字或可转换为数字的文本，返回数字
+                    const numValue = parseFloat(value);
+                    return isNaN(numValue) ? value : numValue;
                 }
             }
-            return 0;
+            return '';
         };
 
-        // 获取主要科目成绩
+        // 获取主要科目成绩和评价结果
         const chineseScore = getSubjectScore('语文');
+        const chineseEvaluation = getSubjectScore('语文评价结果');
         const mathScore = getSubjectScore('数学');
+        const mathEvaluation = getSubjectScore('数学评价结果');
         const englishScore = getSubjectScore('英语');
-        const physicsScore = getSubjectScore('物理');
-        const chemistryScore = getSubjectScore('化学');
-        const biologyScore = getSubjectScore('生物');
-        const historyScore = getSubjectScore('历史');
-        const geographyScore = getSubjectScore('地理');
-        const politicsScore = getSubjectScore('政治');
+        const englishEvaluation = getSubjectScore('英语评价结果');
+        const scienceScore = getSubjectScore('科学');
+        const scienceEvaluation = getSubjectScore('科学评价结果');
+        const artScore = getSubjectScore('美术');
+        const itScore = getSubjectScore('信息技术');
 
         return `
             <div class="report-card" id="currentReportCard">
@@ -558,23 +575,14 @@ class ModernReportGenerator {
                             </div>
                         </div>
 
-                        <!-- 身体健康信息 -->
-                        <div class="health-info">
-                            <table class="health-table">
-                                <tr>
-                                    <td class="health-label">项目</td>
-                                    <td class="health-value">体重(kg)</td>
-                                    <td class="health-value">身高(cm)</td>
-                                    <td class="health-value">视力</td>
-                                </tr>
-                                <tr>
-                                    <td class="health-label">表现</td>
-                                    <td class="health-value">${student.体重 || student['体重kg'] || ''}</td>
-                                    <td class="health-value">${student.身高 || student['身高cm'] || ''}</td>
-                                    <td class="health-value">${student.视力 || ''}</td>
-                                </tr>
-                            </table>
+                        <!-- 寄语 -->
+                        <div class="message-section">
+                            <h3 class="section-title">寄语：</h3>
+                            <div class="message-content">
+                                ${this.getCustomMessage(student)}
+                            </div>
                         </div>
+
                     </div>
 
                     <!-- 右侧综合素质评价 -->
@@ -584,13 +592,9 @@ class ModernReportGenerator {
                             <table class="evaluation-table">
                                 <thead>
                                     <tr>
-                                        <th rowspan="2">序号</th>
-                                        <th rowspan="2">评价项目</th>
-                                        <th rowspan="2">评价结果</th>
-                                        <th colspan="2">学科成绩评价</th>
-                                    </tr>
-                                    <tr>
-                                        <th>平时成绩</th>
+                                        <th>序号</th>
+                                        <th>评价项目</th>
+                                        <th>评价结果</th>
                                         <th>考试成绩</th>
                                     </tr>
                                 </thead>
@@ -598,58 +602,44 @@ class ModernReportGenerator {
                                     <tr>
                                         <td>1</td>
                                         <td>语文</td>
+                                        <td>${chineseEvaluation || ''}</td>
                                         <td>${chineseScore || ''}</td>
-                                        <td>${chineseScore ? Math.round(chineseScore * 1.1) : ''}</td>
-                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td>2</td>
                                         <td>数学</td>
+                                        <td>${mathEvaluation || ''}</td>
                                         <td>${mathScore || ''}</td>
-                                        <td>${mathScore ? Math.round(mathScore * 1.1) : ''}</td>
-                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td>3</td>
                                         <td>外语</td>
+                                        <td>${englishEvaluation || ''}</td>
                                         <td>${englishScore || ''}</td>
-                                        <td>${englishScore ? Math.round(englishScore * 1.1) : ''}</td>
-                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td></td>
-                                        <td>体育与健康</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>合格</td>
+                                        <td>4</td>
+                                        <td>科学</td>
+                                        <td>${scienceEvaluation || ''}</td>
+                                        <td>${scienceScore || ''}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td>音乐</td>
-                                        <td></td>
                                         <td></td>
                                         <td>良好</td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td>美术</td>
-                                        <td>${physicsScore || ''}</td>
-                                        <td>${physicsScore ? Math.round(physicsScore * 1.1) : ''}</td>
                                         <td></td>
+                                        <td>${artScore || '良好'}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td>信息技术</td>
                                         <td></td>
-                                        <td></td>
-                                        <td>良好</td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>劳动技术</td>
-                                        <td>${historyScore || ''}</td>
-                                        <td>${historyScore ? Math.round(historyScore * 0.9) : ''}</td>
-                                        <td></td>
+                                        <td>${itScore || '良好'}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -663,12 +653,6 @@ class ModernReportGenerator {
                     <div class="parent-info">
                         <span>家长签名：</span>
                         <span class="info-gap"></span>
-                        <span>学生上课表现：${student.学生上课表现 || ''}</span>
-                        <span>正式上课：${student.正式上课 || ''}天，其中请假：${student.请假 || ''}天</span>
-                        <span>早退：${student.早退 || ''}次</span>
-                    </div>
-                    <div class="parent-info">
-                        <span>学校课程教育目标：${student.学校课程教育目标 || ''}</span>
                         <span>下学期报名：</span>
                         <span class="info-gap"></span>
                         <span>年</span>
@@ -676,10 +660,6 @@ class ModernReportGenerator {
                         <span>月</span>
                         <span class="info-gap"></span>
                         <span>日</span>
-                    </div>
-                    <div class="parent-info">
-                        <span>学生期末总评：${student.学生期末总评 || ''}</span>
-                        <span class="info-gap"></span>
                     </div>
                 </div>
 
@@ -722,27 +702,60 @@ class ModernReportGenerator {
         return '待提高';
     }
 
+    formatEvaluationResult(value) {
+        // 如果值为空或未定义，返回空字符串
+        if (value === null || value === undefined || value === '') {
+            return '';
+        }
+        
+        // 如果值是字符串且不是纯数字，直接返回
+        if (typeof value === 'string' && isNaN(parseFloat(value))) {
+            return value;
+        }
+        
+        // 如果是数字或数字字符串，尝试转换为数字
+        const numValue = parseFloat(value);
+        if (!isNaN(numValue)) {
+            // 如果是整数，直接返回整数
+            if (Number.isInteger(numValue)) {
+                return numValue.toString();
+            }
+            // 如果是小数，保留一位小数
+            return numValue.toFixed(1);
+        }
+        
+        // 其他情况直接返回原值
+        return value.toString();
+    }
+
+    calculateAverageScore(value) {
+        // 如果值为空或未定义，返回空字符串
+        if (value === null || value === undefined || value === '') {
+            return '';
+        }
+        
+        // 如果值是字符串且不是纯数字，返回空字符串（不能计算平时成绩）
+        if (typeof value === 'string' && isNaN(parseFloat(value))) {
+            return '';
+        }
+        
+        // 如果是数字，计算平时成绩（这里假设平时成绩是考试成绩的1.1倍）
+        const numValue = parseFloat(value);
+        if (!isNaN(numValue) && numValue > 0) {
+            return Math.round(numValue * 1.1).toString();
+        }
+        
+        return '';
+    }
+
     generateTeacherMessage(student) {
-        // 如果有自定义班主任评语，优先使用
+        // 如果有自定义班主任评语，使用自定义内容
         if (student.班主任评语) {
             return student.班主任评语;
         }
 
-        // 生成默认的班主任寄语
-        const avgScore = parseFloat(student.averageScore) || 0;
-        let message = '';
-
-        if (avgScore >= 90) {
-            message = `亲爱的${student.姓名}同学，你是一个非常优秀的学生，学习态度端正，成绩优异。希望你能继续保持这种良好的学习状态，在各个方面都能发挥自己的潜力，成为一名全面发展的好学生。老师相信你一定会成为一名重点高中的优秀学生。`;
-        } else if (avgScore >= 80) {
-            message = `${student.姓名}同学，你是一个学习认真、成绩良好的学生。在学习上你有很强的自觉性，能够按时完成各项作业。希望你在今后的学习中能够更加努力，争取在各个科目上都有更大的进步。`;
-        } else if (avgScore >= 70) {
-            message = `${student.姓名}同学，你在学习上还是比较认真的，但还需要更加努力。希望你能够制定合理的学习计划，提高学习效率，在薄弱科目上多下功夫，争取更好的成绩。`;
-        } else {
-            message = `${student.姓名}同学，学习是一个持续努力的过程。希望你能够端正学习态度，制定学习目标，在老师和家长的帮助下，逐步提高各科成绩。相信通过努力，你一定能够取得进步。`;
-        }
-
-        return message;
+        // 如果没有班主任评语，返回空字符串，不自动填充
+        return '';
     }
 
     generateComment(student) {
@@ -1272,6 +1285,12 @@ class ModernReportGenerator {
         return '<div class="award-name">无</div>';
     }
 
+    // 获取自定义寄语内容
+    getCustomMessage(student) {
+        const message = student.寄语 || '';
+        return message || '';
+    }
+
     // 加载配置
     loadConfig() {
         const savedConfig = localStorage.getItem('reportConfig');
@@ -1310,10 +1329,10 @@ class ModernReportGenerator {
     resetConfig() {
         this.config = {
             reportTitle: '浙江省初中',
-            reportPeriod: '2016/2017学年第一学期',
-            principalName: '俞吉光',
-            directorName: '徐永方',
-            teacherName: '田海霞',
+            reportPeriod: '2024-2025学年第一学期',
+            principalName: '',
+            directorName: '',
+            teacherName: '',
             showIdCard: false,
             showSchool: false
         };
@@ -1326,10 +1345,11 @@ class ModernReportGenerator {
     downloadExcelTemplate() {
         // 创建模板数据
         const templateData = [
-            ['姓名', '班级', '学号', '语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '政治', '获奖情况', '身高cm', '体重kg', '视力', '班主任评语', '学生上课表现', '请假', '早退', '学校课程教育目标', '学生期末总评', '正式上课'],
-            ['张三', '初一(1)班', '001', '85', '90', '88', '82', '85', '87', '89', '86', '84', '三好学生;数学竞赛二等奖', '165', '55', '左眼:5.0 右眼:5.1', '学习认真，成绩优秀', '表现良好', '2', '1', '培养德智体美劳全面发展', '优秀', '180'],
-            ['李四', '初一(1)班', '002', '78', '85', '80', '75', '80', '82', '83', '78', '81', '体育之星', '160', '50', '左眼:4.8 右眼:4.9', '积极向上，体育表现突出', '积极活跃', '1', '0', '培养德智体美劳全面发展', '良好', '180'],
-            ['王五', '初一(1)班', '003', '92', '95', '90', '88', '90', '89', '91', '87', '85', '学习标兵;英语竞赛一等奖', '170', '60', '左眼:5.2 右眼:5.0', '成绩优异，全面发展', '表现优秀', '0', '0', '培养德智体美劳全面发展', '优秀', '180']
+            ['姓名', '班级', '语文', '语文评价结果', '数学', '数学评价结果', '英语', '英语评价结果', '科学', '科学评价结果', '美术', '信息技术', '获奖情况', '寄语', '班主任评语'],
+            ['张三', '初一(1)班', '92', '良好', '88', '良好', '90', '良好', '85', '合格', '良好', '优秀', '三好学生', '该生学习认真，积极向上，希望继续保持！', '张三同学在本学期表现优秀，学习态度端正，成绩稳步提升。'],
+            ['李四', '初一(1)班', '85', '', '92', '良好', '87', '', '89', '良好', '合格', '良好', '优秀班干部', '作为班干部，工作负责，是老师的好帮手。', '李四同学工作能力强，乐于助人，深受同学们喜爱。'],
+            ['王五', '初一(2)班', '90', '良好', '95', '优秀', '93', '', '91', '', '优秀', '良好', '数学竞赛二等奖', '数学天赋突出，希望在其他科目上也能均衡发展。', '王五同学数学成绩突出，思维敏捷，建议加强文科学习。']
+
         ];
 
         // 创建工作簿
@@ -1338,8 +1358,7 @@ class ModernReportGenerator {
 
         // 设置列宽
         ws['!cols'] = [
-            { wch: 8 }, { wch: 12 }, { wch: 8 }, { wch: 6 }, { wch: 6 }, { wch: 6 },
-            { wch: 6 }, { wch: 6 }, { wch: 6 }, { wch: 6 }, { wch: 6 }, { wch: 6 },
+            { wch: 8 }, { wch: 12 }, { wch: 6 }, { wch: 6 }, { wch: 6 }, { wch: 6 },
             { wch: 20 }, { wch: 8 }, { wch: 8 }, { wch: 15 }, { wch: 25 }, { wch: 12 },
             { wch: 8 }, { wch: 8 }, { wch: 20 }, { wch: 12 }, { wch: 10 }
         ];

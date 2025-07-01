@@ -152,7 +152,7 @@ start_prod_server() {
     
     # 设置生产环境变量
     export NODE_ENV=production
-    export PORT=3000
+    export PORT=7788
     
     # 使用 nohup 在后台启动服务器
     nohup npm start > $LOG_FILE 2>&1 &
@@ -197,9 +197,9 @@ stop_server() {
         print_warning "未找到服务器进程ID文件"
     fi
     
-    # 强制关闭端口3000的进程
-    if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
-        local pid=$(lsof -Ti :3000)
+    # 强制关闭端口7788的进程
+    if lsof -Pi :7788 -sTCP:LISTEN -t >/dev/null 2>&1; then
+        local pid=$(lsof -Ti :7788)
         if [ ! -z "$pid" ]; then
             kill -9 $pid 2>/dev/null || true
             print_success "端口 3000 已释放"
@@ -226,9 +226,9 @@ check_status() {
             print_success "服务器正在运行 (PID: $PID)"
             
             # 检查端口
-            if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
+            if lsof -Pi :7788 -sTCP:LISTEN -t >/dev/null 2>&1; then
                 print_success "端口 3000 正在监听"
-                print_success "访问地址: http://localhost:3000"
+                print_success "访问地址: http://localhost:7788"
             else
                 print_warning "端口 3000 未监听"
             fi
@@ -304,13 +304,13 @@ main() {
         "dev")
             check_node
             check_npm
-            check_port 3000
+            check_port 7788
             install_dependencies
             start_dev_server
             print_success "开发服务器启动完成！"
             echo ""
-            echo -e "${CYAN}📍 访问地址: ${WHITE}http://localhost:3000${NC}"
-            echo -e "${CYAN}📋 API文档: ${WHITE}http://localhost:3000/api/health${NC}"
+            echo -e "${CYAN}📍 访问地址: ${WHITE}http://localhost:7788${NC}"
+            echo -e "${CYAN}📋 API文档: ${WHITE}http://localhost:7788/api/health${NC}"
             echo -e "${CYAN}📁 项目目录: ${WHITE}$(pwd)${NC}"
             echo ""
             print_info "使用 './start.sh stop' 停止服务器"
@@ -319,12 +319,12 @@ main() {
         "prod")
             check_node
             check_npm
-            check_port 3000
+            check_port 7788
             install_dependencies
             start_prod_server
             print_success "生产服务器启动完成！"
             echo ""
-            echo -e "${CYAN}📍 访问地址: ${WHITE}http://localhost:3000${NC}"
+            echo -e "${CYAN}📍 访问地址: ${WHITE}http://localhost:7788${NC}"
             echo ""
             print_info "使用 './start.sh stop' 停止服务器"
             ;;
@@ -335,7 +335,7 @@ main() {
             restart_server
             print_success "服务器重启完成！"
             echo ""
-            echo -e "${CYAN}📍 访问地址: ${WHITE}http://localhost:3000${NC}"
+            echo -e "${CYAN}📍 访问地址: ${WHITE}http://localhost:7788${NC}"
             ;;
         "status")
             check_status

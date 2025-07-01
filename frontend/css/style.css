@@ -42,6 +42,21 @@
     --container-max-width: 1200px;
     --border-radius: 12px;
     --border-radius-lg: 20px;
+
+    /* 报告单专用变量 */
+    --report-bg: white;
+    --report-text-primary: #000;
+    --report-text-secondary: #333;
+    --report-text-muted: #666;
+    --report-border-strong: 2px solid #000;
+    --report-border-normal: 1px solid #000;
+    --report-border-light: 1px solid #ddd;
+    --report-font-family: 'SimSun', '宋体', serif;
+    --report-font-size-base: 14px;
+    --report-font-size-sm: 12px;
+    --report-font-size-lg: 16px;
+    --report-font-size-xl: 20px;
+    --report-font-size-xxl: 24px;
 }
 
 body {
@@ -667,300 +682,6 @@ section {
     transform: translateY(-2px);
 }
 
-/* 报告单样式优化 */
-.report-card {
-    font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
-    background: white !important;
-    color: #000 !important;
-    padding: 30px;
-    max-width: 800px;
-    margin: 0 auto;
-    line-height: 1.6;
-    font-size: 14px;
-    border: 2px solid #000 !important;
-    box-sizing: border-box;
-    position: relative;
-    overflow: visible;
-}
-
-.report-header {
-    text-align: center;
-    margin-bottom: 30px;
-    border-bottom: 2px solid #333;
-    padding-bottom: 20px;
-}
-
-.report-main-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-.report-sub-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.report-year {
-    font-size: 16px;
-    color: #666;
-}
-
-.student-basic-info {
-    margin-bottom: 25px;
-}
-
-.info-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.info-label {
-    font-weight: bold;
-    color: #333;
-    min-width: 80px;
-}
-
-.info-value {
-    flex: 1;
-    border-bottom: 1px solid #333;
-    padding-bottom: 2px;
-    min-height: 20px;
-    min-width: 120px;
-}
-
-.report-main-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-bottom: 25px;
-}
-
-.left-content, .right-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.section-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
-}
-
-.teacher-message {
-    background: white !important;
-    background-color: white !important;
-    padding: 15px;
-    border: 1px solid #000 !important;
-    color: #000 !important;
-}
-
-.message-content {
-    text-align: justify;
-    line-height: 1.8;
-    color: #000 !important;
-}
-
-.awards-section {
-    background: white !important;
-    background-color: white !important;
-    padding: 15px;
-    border: 1px solid #000 !important;
-    color: #000 !important;
-}
-
-.awards-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.award-name {
-    background: white !important;
-    padding: 8px 12px;
-    border: 1px solid #000 !important;
-    font-size: 13px;
-    color: #000 !important;
-}
-
-.health-info {
-    background: white !important;
-    padding: 15px;
-    border: 1px solid #000 !important;
-    color: #000 !important;
-}
-
-.health-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 10px;
-}
-
-.health-table td {
-    border: 1px solid #666;
-    padding: 8px;
-    text-align: center;
-}
-
-.health-label {
-    background: white !important;
-    font-weight: bold;
-    color: #000 !important;
-    border: 1px solid #000 !important;
-}
-
-.health-value {
-    background: white !important;
-    color: #000 !important;
-    border: 1px solid #000 !important;
-}
-
-.health-note {
-    font-size: 12px;
-    color: #666;
-    margin-top: 10px;
-}
-
-.evaluation-section {
-    background: white !important;
-    padding: 15px;
-    border: 1px solid #000 !important;
-    color: #000 !important;
-}
-
-.evaluation-title {
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.evaluation-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-}
-
-.evaluation-table th,
-.evaluation-table td {
-    border: 1px solid #000 !important;
-    padding: 6px;
-    text-align: center;
-    background: white !important;
-    color: #000 !important;
-}
-
-.evaluation-table th {
-    background: white !important;
-    font-weight: bold;
-    color: #000 !important;
-    border: 1px solid #000 !important;
-}
-
-.signature-section {
-    border-top: 2px solid #333;
-    padding-top: 20px;
-    margin-top: 30px;
-}
-
-.signature-item {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-weight: bold;
-    color: #333;
-}
-
-.parent-message {
-    background: white !important;
-    background-color: white !important;
-    padding: 15px;
-    border: 1px solid #000 !important;
-    color: #000 !important;
-}
-
-.parent-info {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: #666;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.info-gap {
-    display: inline-block;
-    width: 60px;
-    border-bottom: 1px solid #666;
-    height: 12px;
-    margin: 0 5px;
-}
-
-/* 打印样式 */
-@media print {
-    .report-card {
-        padding: 20px;
-        box-shadow: none;
-        font-size: 12px;
-    }
-    
-    .report-main-content {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .info-row {
-        page-break-inside: avoid;
-    }
-    
-    .teacher-message,
-    .awards-section,
-    .health-info,
-    .evaluation-section {
-        page-break-inside: avoid;
-    }
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .report-main-content {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .info-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .info-label {
-        min-width: auto;
-    }
-    
-    .info-value {
-        width: 100%;
-        min-width: auto;
-    }
-    
-    .signature-item {
-        flex-direction: column;
-        gap: 10px;
-    }
-}
-
 .student-count {
     display: flex;
     align-items: center;
@@ -1067,6 +788,34 @@ section {
 .report-preview {
     min-height: 600px;
     padding: 40px;
+    background: white !important;
+}
+
+/* 修复网页端预览样式，使其与PDF导出样式一致 */
+.report-preview .report-card {
+    /* 基本样式，确保在预览容器中正确显示，并设定基础字体和颜色 */
+    background: white;
+    color: #000;
+    font-family: 'SimSun', '宋体', serif;
+    border: 2px solid #000;
+}
+
+/*
+  为报告单预览内的常见元素强制设定文字颜色和重置背景效果。
+  这可以覆盖掉来自暗色主题的继承样式，特别是针对那些没有在“浙江省报告单样式”部分被明确指定的通用元素（如 p, span, div）。
+*/
+.report-preview .report-card p,
+.report-preview .report-card span,
+.report-preview .report-card div,
+.report-preview .report-card li,
+.report-preview .report-card td,
+.report-preview .report-card th,
+.report-preview .report-card h1, .report-preview .report-card h2, .report-preview .report-card h3 {
+    color: #000 !important;
+    background-image: none !important; /* 移除可能继承的渐变背景 */
+    -webkit-background-clip: initial !important; /* 重置文字裁剪，以防渐变文字效果 */
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
 }
 
 .empty-state {
@@ -1087,44 +836,6 @@ section {
 .empty-state h3 {
     margin-bottom: 10px;
     color: var(--text-secondary);
-}
-
-/* 按钮样式 */
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all var(--duration-normal) ease;
-    text-decoration: none;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: white;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
-}
-
-.btn-secondary {
-    background: var(--bg-glass);
-    backdrop-filter: blur(10px);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
 }
 
 /* 加载动画 */
@@ -1389,15 +1100,15 @@ section {
 
 /* 浙江省报告单样式 */
 .report-card {
-    background: white;
-    color: #000;
-    font-family: 'SimSun', '宋体', serif;
+    background: var(--report-bg);
+    color: var(--report-text-primary);
+    font-family: var(--report-font-family);
     line-height: 1.4;
     max-width: 900px;
     margin: 0 auto;
     padding: 30px;
-    border: 2px solid #000;
-    font-size: 14px;
+    border: var(--report-border-strong);
+    font-size: var(--report-font-size-base);
     box-sizing: border-box;
 }
 
@@ -1409,28 +1120,28 @@ section {
 }
 
 .report-main-title {
-    font-size: 24px;
+    font-size: var(--report-font-size-xxl);
     font-weight: bold;
     margin: 0;
     letter-spacing: 2px;
 }
 
 .report-sub-title {
-    font-size: 20px;
+    font-size: var(--report-font-size-xl);
     font-weight: bold;
     margin: 5px 0;
     letter-spacing: 4px;
 }
 
 .report-year {
-    font-size: 14px;
+    font-size: var(--report-font-size-base);
     margin-top: 10px;
 }
 
 /* 学生基本信息 */
 .student-basic-info {
     margin-bottom: 20px;
-    border: 1px solid #000;
+    border: var(--report-border-normal);
     padding: 10px;
     box-sizing: border-box;
 }
@@ -1452,7 +1163,7 @@ section {
 }
 
 .underline {
-    border-bottom: 1px solid #000;
+    border-bottom: var(--report-border-normal);
     padding-bottom: 2px;
     min-width: 120px;
     display: inline-block;
@@ -1463,80 +1174,157 @@ section {
     display: flex;
     gap: 20px;
     margin-bottom: 20px;
+    align-items: stretch;
 }
 
 .left-content {
     flex: 1;
     padding-right: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .right-content {
     flex: 1;
     padding-left: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* 班主任寄语 */
 .teacher-message {
     margin-bottom: 20px;
-    border: 1px solid #000;
+    border: var(--report-border-normal);
     padding: 10px;
     min-height: 120px;
     box-sizing: border-box;
-    background: white !important;
-    background-color: white !important;
-    color: #000 !important;
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    visibility: visible !important;
 }
 
 .teacher-message * {
-    background: white !important;
-    background-color: white !important;
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: inherit !important;
+    visibility: inherit !important;
+}
+
+.teacher-message .section-title {
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    font-weight: bold !important;
+}
+
+.teacher-message .message-content {
     color: #000 !important;
+    display: block !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .section-title {
-    font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 14px;
+    font-weight: bold !important;
+    margin-bottom: 8px !important;
+    font-size: var(--report-font-size-base) !important;
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    visibility: visible !important;
 }
 
 .message-content {
     line-height: 1.6;
     text-align: justify;
-    font-size: 13px;
-    color: #000 !important;
-    background: white !important;
+    font-size: 13px; /* 保持特定值或创建新变量 --report-font-size-xs */
+    color: var(--report-text-primary) !important;
+    background: var(--report-bg) !important;
 }
 
 /* 获奖情况 */
 .awards-section {
     margin-bottom: 20px;
-    border: 1px solid #000;
+    border: var(--report-border-normal);
     padding: 10px;
     min-height: 60px;
     box-sizing: border-box;
-    background: white !important;
-    background-color: white !important;
-    color: #000 !important;
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    visibility: visible !important;
 }
 
 .awards-section * {
-    background: white !important;
-    background-color: white !important;
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: inherit !important;
+    visibility: inherit !important;
+}
+
+.awards-section .section-title {
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    font-weight: bold !important;
+}
+
+.awards-section .awards-content {
     color: #000 !important;
+    /* The 'display: block' was preventing the gap between awards.
+       Changing to 'flex' allows flex properties like 'gap' and 'flex-wrap' from the '.awards-content' rule to apply correctly. */
+    display: flex !important;
 }
 
 .awards-content {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
+}
+
+/* 寄语部分 */
+.message-section {
+    margin-bottom: 20px;
+    border: var(--report-border-normal);
+    padding: 10px;
+    min-height: 60px;
+    box-sizing: border-box;
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+.message-section * {
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: inherit !important;
+    visibility: inherit !important;
+}
+
+.message-section .section-title {
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    font-weight: bold !important;
+}
+
+.message-section .message-content {
+    color: #000 !important;
+    display: block !important;
+    line-height: 1.6;
+    padding: 5px 0;
 }
 
 .award-name {
-    background: white !important;
+    background: var(--report-bg) !important;
     padding: 2px 8px;
-    border: 1px solid #000 !important;
-    font-size: 12px;
-    color: #000 !important;
+    border: var(--report-border-normal) !important;
+    font-size: var(--report-font-size-sm);
+    color: var(--report-text-primary) !important;
 }
 
 /* 身体健康信息 */
@@ -1547,102 +1335,144 @@ section {
 .health-table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #000;
+    border: var(--report-border-normal);
     margin-bottom: 10px;
 }
 
 .health-table td {
-    border: 1px solid #000;
+    border: var(--report-border-normal);
     padding: 5px 8px;
     text-align: center;
-    font-size: 12px;
-    background: white !important;
-    color: #000 !important;
+    font-size: var(--report-font-size-sm);
+    background: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
 }
 
 .health-label {
-    background: white !important;
+    background: var(--report-bg) !important;
     font-weight: bold;
-    color: #000 !important;
+    color: var(--report-text-primary) !important;
 }
 
 .health-note {
-    font-size: 12px;
+    font-size: var(--report-font-size-sm);
     margin-top: 5px;
 }
 
 /* 家长建议及意见 */
 .parent-message {
-    border: 1px solid #000;
+    border: var(--report-border-normal);
     padding: 10px;
     min-height: 80px;
     box-sizing: border-box;
-    background: white !important;
-    background-color: white !important;
-    color: #000 !important;
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    visibility: visible !important;
 }
 
 .parent-message * {
-    background: white !important;
-    background-color: white !important;
+    background: var(--report-bg) !important;
+    background-color: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    display: inherit !important;
+    visibility: inherit !important;
+}
+
+.parent-message .section-title {
+    color: var(--report-text-primary) !important;
+    display: block !important;
+    font-weight: bold !important;
+}
+
+.parent-message .parent-info {
     color: #000 !important;
+    display: flex !important;
 }
 
 .parent-message h3 {
     font-weight: bold;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: var(--report-font-size-base);
 }
 
 .parent-info {
     margin-bottom: 5px;
-    font-size: 12px;
+    font-size: var(--report-font-size-sm);
     display: flex;
     gap: 15px;
 }
 
+/* 隐藏“身体健康信息”和“家长建议及意见”区域 */
+.health-info,
+.parent-message {
+    display: none !important;
+}
+
 /* 综合素质评价 */
 .evaluation-section {
-    border: 1px solid #000;
+    border: var(--report-border-normal);
     padding: 10px;
     box-sizing: border-box;
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto 1fr;
 }
 
 .evaluation-title {
     text-align: center;
     font-weight: bold;
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: var(--report-font-size-lg);
 }
 
 .evaluation-table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #000;
+    border: var(--report-border-normal);
+    flex: 1;
+    height: 100%;
 }
 
 .evaluation-table th,
 .evaluation-table td {
-    border: 1px solid #000;
-    padding: 4px 6px;
+    border: var(--report-border-normal);
+    padding: 8px 6px;
     text-align: center;
-    font-size: 12px;
-    background: white !important;
-    color: #000 !important;
+    font-size: var(--report-font-size-sm);
+    background: var(--report-bg) !important;
+    color: var(--report-text-primary) !important;
+    vertical-align: middle;
+    word-wrap: break-word;       /* 允许长单词换行 */
+    overflow-wrap: break-word;   /* 增强换行能力 */
+    white-space: normal;         /* 确保文本正常换行 */
 }
 
 .evaluation-table th {
-    background: white !important;
+    background: var(--report-bg) !important;
     font-weight: bold;
-    color: #000 !important;
+    color: var(--report-text-primary) !important;
 }
 
 .evaluation-table tbody tr:nth-child(even) {
-    background: white !important;
+    background: var(--report-bg) !important;
 }
 
 .evaluation-table tbody tr {
     background: white !important;
+}
+
+.evaluation-table tbody {
+    height: 100%;
+}
+
+/* 隐藏“劳动技术”行 */
+/* 注意: 此规则假定“劳动技术”是综合素质评价表格正文(tbody)中的第五行。*/
+/* 如果行的顺序发生变化，此规则可能会隐藏错误的行。*/
+/* 最稳妥的解决方案是直接从生成表格的HTML或JavaScript代码中移除该行。*/
+.evaluation-table tbody tr:nth-child(5) {
+    display: none;
 }
 
 /* 底部签名区域 */
@@ -1650,13 +1480,13 @@ section {
     text-align: right;
     margin-top: 20px;
     padding-top: 10px;
-    border-top: 1px solid #000;
+    border-top: var(--report-border-normal);
 }
 
 .signature-item {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
+    font-size: var(--report-font-size-sm);
 }
 
 .signature-item span {
@@ -1726,6 +1556,7 @@ section {
     /* 确保PDF导出时关键区域背景为白色 */
     .teacher-message,
     .awards-section,
+    .message-section,
     .parent-message {
         background: white !important;
         background-color: white !important;
@@ -1735,6 +1566,7 @@ section {
     
     .teacher-message *,
     .awards-section *,
+    .message-section *,
     .parent-message * {
         background: white !important;
         background-color: white !important;

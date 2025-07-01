@@ -7,11 +7,11 @@ const fs = require('fs').promises;
 const PDFDocument = require('pdfkit');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 7788;
 
 // 中间件配置
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
+    origin: ['http://localhost:7788', 'http://127.0.0.1:7788', 'http://localhost:5500'],
     credentials: true
 }));
 
@@ -410,18 +410,10 @@ function processStudentData(rawData) {
 }
 
 function getSubjectColumns(headers) {
-    const excludeColumns = [
-        '班级', '姓名', '班主任评语', '奖惩情况', '学号', '性别',
-        '年龄', '出生日期', '备注', '评语', '家长姓名', '联系电话', '地址'
-    ];
-    
-    // 识别成绩相关的列（包含"成绩"字样的列）
+    const allowedSubjects = ['语文', '数学', '英语', '科学', '美术', '信息技术'];
     return headers.filter(header => {
         const headerTrim = header.trim();
-        // 包含"成绩"字样的列，且不在排除列表中
-        return (headerTrim.includes('成绩') || headerTrim.includes('分数') || headerTrim.includes('得分')) &&
-               !excludeColumns.includes(headerTrim) &&
-               headerTrim !== '';
+        return allowedSubjects.some(subject => headerTrim.startsWith(subject));
     });
 }
 
