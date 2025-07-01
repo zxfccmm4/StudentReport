@@ -1343,31 +1343,13 @@ class ModernReportGenerator {
 
     // 下载Excel模板
     downloadExcelTemplate() {
-        // 创建模板数据
-        const templateData = [
-            ['姓名', '班级', '语文', '语文评价结果', '数学', '数学评价结果', '英语', '英语评价结果', '科学', '科学评价结果', '美术', '信息技术', '获奖情况', '寄语', '班主任评语'],
-            ['张三', '初一(1)班', '92', '良好', '88', '良好', '90', '良好', '85', '合格', '良好', '优秀', '三好学生', '该生学习认真，积极向上，希望继续保持！', '张三同学在本学期表现优秀，学习态度端正，成绩稳步提升。'],
-            ['李四', '初一(1)班', '85', '', '92', '良好', '87', '', '89', '良好', '合格', '良好', '优秀班干部', '作为班干部，工作负责，是老师的好帮手。', '李四同学工作能力强，乐于助人，深受同学们喜爱。'],
-            ['王五', '初一(2)班', '90', '良好', '95', '优秀', '93', '', '91', '', '优秀', '良好', '数学竞赛二等奖', '数学天赋突出，希望在其他科目上也能均衡发展。', '王五同学数学成绩突出，思维敏捷，建议加强文科学习。']
-
-        ];
-
-        // 创建工作簿
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.aoa_to_sheet(templateData);
-
-        // 设置列宽
-        ws['!cols'] = [
-            { wch: 8 }, { wch: 12 }, { wch: 6 }, { wch: 6 }, { wch: 6 }, { wch: 6 },
-            { wch: 20 }, { wch: 8 }, { wch: 8 }, { wch: 15 }, { wch: 25 }, { wch: 12 },
-            { wch: 8 }, { wch: 8 }, { wch: 20 }, { wch: 12 }, { wch: 10 }
-        ];
-
-        XLSX.utils.book_append_sheet(wb, ws, '学生成绩模板');
-
-        // 下载文件
-        XLSX.writeFile(wb, '学生成绩报告单模板.xlsx');
-        this.showToast('Excel模板下载成功！', 'success');
+        const link = document.createElement('a');
+        link.href = '/download/excel-template'; // 指向后端的新路由
+        link.download = '学生成绩报告单模板.xlsx'; // 建议的文件名
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.showToast('Excel模板下载已开始！', 'success');
     }
 }
 

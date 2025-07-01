@@ -332,6 +332,20 @@ app.use((error, req, res, next) => {
 });
 
 // 404处理
+app.get('/download/excel-template', (req, res) => {
+    const filePath = path.join(__dirname, '..', '学生成绩报告单模板.xlsx');
+    res.download(filePath, '学生成绩报告单模板.xlsx', (err) => {
+        if (err) {
+            console.error('文件下载失败:', err);
+            res.status(500).json({
+                status: 'error',
+                message: '模板文件下载失败'
+            });
+        }
+    });
+});
+
+// 404处理
 app.use((req, res) => {
     res.status(404).json({
         status: 'error',

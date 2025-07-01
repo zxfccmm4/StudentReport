@@ -44,7 +44,13 @@ Alternatively, you can run the application manually:
     ```bash
     npm start
     ```
-3.  Open your browser and go to [http://localhost:3000](http://localhost:3000).
+3.  Open your browser and go to [http://localhost:7788](http://localhost:7788).
+
+## Usage
+
+### Downloading Excel Template
+
+You can download the Excel template directly from the application's interface. This template is located in the project's root directory as `学生成绩报告单模板.xlsx`.
 
 ## Project Structure
 
@@ -63,12 +69,14 @@ Alternatively, you can run the application manually:
 │   └── index.html
 ├── .gitignore
 ├── README.md
+├── 学生成绩报告单模板.xlsx
 └── start.sh
 ```
 
 ## API Endpoints
 
 *   `GET /api/students`: Returns a list of students from the `sample_student_data.csv` file.
+*   `GET /download/excel-template`: Downloads the `学生成绩报告单模板.xlsx` file.
 
 ## Data
 
