@@ -253,6 +253,8 @@ class ModernReportGenerator {
             // 计算总分和平均分
             const subjects = this.getSubjectColumns(headers);
             console.log(`学生 ${student.姓名} 的科目列表:`, subjects);
+            console.log("processStudentData: Excel headers:", headers); // Added log
+            console.log("processStudentData: Identified subjects:", subjects); // Added log
             
             let totalScore = 0;
             let validScores = 0;
@@ -279,7 +281,7 @@ class ModernReportGenerator {
 
             student.totalScore = totalScore;
             student.averageScore = validScores > 0 ? (totalScore / validScores).toFixed(1) : '0';
-            student.subjects = subjects;
+            student.subjects = subjects; // 确保这里使用更新后的科目列表
             student.subjectCount = validScores;
             
             console.log(`学生 ${student.姓名} 处理完成: 科目数=${subjects.length}, 总分=${totalScore}, 平均分=${student.averageScore}`);
@@ -303,39 +305,22 @@ class ModernReportGenerator {
 
     getSubjectColumns(headers) {
         console.log('Excel表头:', headers);
-
-        const excludeColumns = [
-            '班级', '姓名', '班主任评语', '奖惩情况', '获奖情况', '学号', '性别', '身份证号',
-            '年龄', '出生日期', '备注', '评语', '家长姓名', '联系电话', '地址', '学校',
-            '身高', '体重', '视力', '健康状况', '体重kg', '身高cm', '学生上课表现',
-            '请假', '早退', '学校课程教育目标', '学生期末总评', '正式上课'
-        ];
-
-        // 识别成绩相关的列（包含"成绩"字样的列或者是已知的科目名称）
-        const knownSubjects = [
-            '语文', '数学', '英语', '科学',
-            '体育', '音乐', '美术', '信息技术', '劳动技术', '综合实践'
-        ];
+        
+        // 为了与报告单模板和后端逻辑保持一致，这里只识别核心科目
+        const coreSubjects = ['语文', '数学', '英语', '科学', '社会'];
 
         const subjects = headers.filter(header => {
             const headerTrim = header.trim();
-
-            // 排除非科目列
-            if (excludeColumns.includes(headerTrim)) {
+            if (!headerTrim) {
                 return false;
             }
 
-            // 包含"成绩"字样的列
-            const hasScoreKeyword = headerTrim.includes('成绩') || headerTrim.includes('分数') || headerTrim.includes('得分');
-
-            // 是已知科目名称的列
-            const isKnownSubject = knownSubjects.some(subject =>
-                headerTrim.includes(subject) || headerTrim === subject
-            );
-
-            const isSubject = (hasScoreKeyword || isKnownSubject) && headerTrim !== '';
-
-            console.log(`检查列 "${headerTrim}": ${isSubject ? '是科目' : '不是科目'}`);
+            // 检查是否是核心科目之一（允许 "语文" 或 "语文成绩" 这样的形式）
+            const isSubject = coreSubjects.some(subject => headerTrim.startsWith(subject));
+            
+            if (isSubject) {
+                console.log(`getSubjectColumns: Header "${headerTrim}" is identified as a subject.`);
+            }
             return isSubject;
         });
 
@@ -359,8 +344,9 @@ class ModernReportGenerator {
         thead.innerHTML = '';
         tbody.innerHTML = '';
 
-        // 准备显示的列
-        const displayColumns = ['姓名', '班级', ...this.studentsData[0].subjects.slice(0, 5), '总分', '平均分', '排名'];
+        // 准备显示的列：姓名、班级、前5个科目、总分、平均分、排名
+        const dynamicSubjects = this.studentsData[0].subjects.slice(0, 5);
+        const displayColumns = ['姓名', '班级', ...dynamicSubjects, '总分', '平均分', '排名'];
         
         // 生成表头
         const headerRow = document.createElement('tr');
@@ -514,17 +500,7 @@ class ModernReportGenerator {
             return '';
         };
 
-        // 获取主要科目成绩和评价结果
-        const chineseScore = getSubjectScore('语文');
-        const chineseEvaluation = getSubjectScore('语文评价结果');
-        const mathScore = getSubjectScore('数学');
-        const mathEvaluation = getSubjectScore('数学评价结果');
-        const englishScore = getSubjectScore('英语');
-        const englishEvaluation = getSubjectScore('英语评价结果');
-        const scienceScore = getSubjectScore('科学');
-        const scienceEvaluation = getSubjectScore('科学评价结果');
-        const artScore = getSubjectScore('美术');
-        const itScore = getSubjectScore('信息技术');
+        // 综合素质评价的科目将从学生数据中动态生成
 
         return `
             <div class="report-card" id="currentReportCard">
@@ -594,53 +570,17 @@ class ModernReportGenerator {
                                     <tr>
                                         <th>序号</th>
                                         <th>评价项目</th>
-                                        <th>评价结果</th>
                                         <th>考试成绩</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    ${student.subjects.map((subject, index) => `
                                     <tr>
-                                        <td>1</td>
-                                        <td>语文</td>
-                                        <td>${chineseEvaluation || ''}</td>
-                                        <td>${chineseScore || ''}</td>
+                                        <td>${index + 1}</td>
+                                        <td>${subject}</td>
+                                        <td>${student[subject] || ''}</td>
                                     </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>数学</td>
-                                        <td>${mathEvaluation || ''}</td>
-                                        <td>${mathScore || ''}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>外语</td>
-                                        <td>${englishEvaluation || ''}</td>
-                                        <td>${englishScore || ''}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>4</td>
-                                        <td>科学</td>
-                                        <td>${scienceEvaluation || ''}</td>
-                                        <td>${scienceScore || ''}</td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>音乐</td>
-                                        <td></td>
-                                        <td>良好</td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>美术</td>
-                                        <td></td>
-                                        <td>${artScore || '良好'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>信息技术</td>
-                                        <td></td>
-                                        <td>${itScore || '良好'}</td>
-                                    </tr>
+                                    `).join('')}
                                 </tbody>
                             </table>
                         </div>

@@ -388,6 +388,8 @@ function processStudentData(rawData) {
 
         // 计算总分和平均分
         const subjects = getSubjectColumns(headers);
+        console.log("processStudentData (backend): Excel headers:", headers); // Added log
+        console.log("processStudentData (backend): Identified subjects:", subjects); // Added log
         let totalScore = 0;
         let validScores = 0;
 
@@ -424,109 +426,169 @@ function processStudentData(rawData) {
 }
 
 function getSubjectColumns(headers) {
-    const allowedSubjects = ['语文', '数学', '英语', '科学', '美术', '信息技术'];
+    const allowedSubjects = ['语文', '数学', '英语', '科学', '社会']; // 新增社会，移除美术、信息技术
+    console.log("getSubjectColumns (backend): Excel headers:", headers); // Added log
     return headers.filter(header => {
         const headerTrim = header.trim();
-        return allowedSubjects.some(subject => headerTrim.startsWith(subject));
+        const isSubject = allowedSubjects.some(subject => headerTrim.startsWith(subject));
+        console.log(`getSubjectColumns (backend): Header "${headerTrim}", isSubject: ${isSubject}`); // Added log
+        return isSubject;
     });
 }
 
 function generateReportHTML(student, totalStudents) {
-    const subjectRows = student.subjects.map(subject => {
-        const score = student[subject] || 0;
-        return `
-            <tr>
-                <td>${subject}</td>
-                <td>${score}</td>
-                <td>${getGradeLevel(parseFloat(score))}</td>
-                <td style="width: 100px;">
-                    <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
-                        <div style="background: ${getScoreColor(score)}; height: 100%; width: ${score}%; transition: width 0.5s ease;"></div>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join('');
+    // 获取学生的各科成绩
+    const getSubjectScore = (subjectName) => {
+        // 尝试多种可能的字段名
+        const possibleFields = [
+            `${subjectName}成绩`,
+            `${subjectName}`,
+            subjectName
+        ];
+
+        for (const field of possibleFields) {
+            if (student[field] !== undefined && student[field] !== null && student[field] !== '') {
+                const value = student[field];
+                // 如果是文本，直接返回
+                if (typeof value === 'string' && isNaN(parseFloat(value))) {
+                    return value;
+                }
+                // 如果是数字或可转换为数字的文本，返回数字
+                const numValue = parseFloat(value);
+                return isNaN(numValue) ? value : numValue;
+            }
+        }
+        return '';
+    };
+
+    // 获取主要科目成绩
+    const chineseScore = getSubjectScore('语文');
+    const mathScore = getSubjectScore('数学');
+    const englishScore = getSubjectScore('英语');
+    const scienceScore = getSubjectScore('科学');
+    const socialScore = getSubjectScore('社会'); // 新增社会科目
 
     return `
         <div class="report-card">
+            <!-- 报告单标题 -->
             <div class="report-header">
-                <h1 class="report-title">学生成绩报告单</h1>
-                <p class="report-subtitle">Student Academic Report</p>
-                <div style="margin-top: 10px; font-size: 14px; color: #666;">
-                    生成时间：${new Date().toLocaleString('zh-CN')}
+                <h1 class="report-main-title">${student.reportTitle || '浙江省初中'}素质发展</h1>
+                <h2 class="report-sub-title">报告单</h2>
+                <div class="report-year">${student.reportPeriod || '2024-2025学年第一学期'}</div>
+            </div>
+
+            <!-- 学生基本信息 -->
+            <div class="student-basic-info">
+                <div class="info-row">
+                    <span class="info-label">学校(盖章):</span>
+                    <span class="info-value underline">${student.学校 || '浙江省杭州市第一中学初中部'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">班级:</span>
+                    <span class="info-value underline">${student.班级 || '初级一年级(04)班'}</span>
+                    <span class="info-label">姓名:</span>
+                    <span class="info-value underline">${student.姓名 || ''}</span>
+                    <span class="info-label">身份证号:</span>
+                    <span class="info-value underline">${student.身份证号 || ''}</span>
                 </div>
             </div>
 
-            <div class="student-info">
-                <div class="info-item">
-                    <span class="info-label">姓名：</span>
-                    <span class="info-value">${student.姓名 || ''}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">班级：</span>
-                    <span class="info-value">${student.班级 || '未填写'}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">班主任评语：</span>
-                    <span class="info-value">${student.班主任评语 || '暂无评语'}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">奖惩情况：</span>
-                    <span class="info-value">${student.奖惩情况 || '无'}</span>
-                </div>
-            </div>
+            <!-- 主要内容区域 -->
+            <div class="report-main-content">
+                <!-- 左侧内容 -->
+                <div class="left-content">
+                    <!-- 班主任寄语 -->
+                    <div class="teacher-message">
+                        <h3 class="section-title">班主任寄语：</h3>
+                        <div class="message-content">
+                            ${student.班主任评语 || ''}
+                        </div>
+                    </div>
 
-            <div class="scores-section">
-                <h3 class="section-title-report">各科成绩详情</h3>
-                <table class="scores-table">
-                    <thead>
-                        <tr>
-                            <th>科目</th>
-                            <th>成绩</th>
-                            <th>等级</th>
-                            <th>进度条</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${subjectRows}
-                    </tbody>
-                </table>
-            </div>
+                    <!-- 获奖情况 -->
+                    <div class="awards-section">
+                        <h3 class="section-title">获奖情况：</h3>
+                        <div class="awards-content">
+                            ${student.获奖情况 || '无'}
+                        </div>
+                    </div>
 
-            <div class="summary-section">
-                <div class="summary-item">
-                    <div class="summary-label">总分</div>
-                    <div class="summary-value">${student.totalScore}</div>
+                    <!-- 寄语 -->
+                    <div class="message-section">
+                        <h3 class="section-title">寄语：</h3>
+                        <div class="message-content">
+                            ${student.寄语 || ''}
+                        </div>
+                    </div>
+
                 </div>
-                <div class="summary-item">
-                    <div class="summary-label">平均分</div>
-                    <div class="summary-value">${student.averageScore}</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">班级排名</div>
-                    <div class="summary-value">${student.rank}</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">总人数</div>
-                    <div class="summary-value">${totalStudents}</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">科目数量</div>
-                    <div class="summary-value">${student.subjectCount}</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">整体评级</div>
-                    <div class="summary-value" style="color: ${getScoreColor(student.averageScore)};">
-                        ${getGradeLevel(parseFloat(student.averageScore))}
+
+                <!-- 右侧综合素质评价 -->
+                <div class="right-content">
+                    <div class="evaluation-section">
+                        <h3 class="evaluation-title">综合素质评价</h3>
+                        <table class="evaluation-table">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>评价项目</th>
+                                    <th>考试成绩</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>语文</td>
+                                    <td>${chineseScore || ''}</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>数学</td>
+                                    <td>${mathScore || ''}</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>外语</td>
+                                    <td>${englishScore || ''}</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>科学</td>
+                                    <td>${scienceScore || ''}</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>社会</td>
+                                    <td>${socialScore || ''}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div class="comment-section">
-                <h3 class="section-title-report">教师评语</h3>
-                <div class="comment-text">
-                    ${generateComment(student, totalStudents)}
+            <!-- 家长建议及意见 -->
+            <div class="parent-message">
+                <h3 class="section-title">家长建议及意见：</h3>
+                <div class="parent-info">
+                    <span>家长签名：</span>
+                    <span class="info-gap"></span>
+                    <span>下学期报名：</span>
+                    <span class="info-gap"></span>
+                    <span>年</span>
+                    <span class="info-gap"></span>
+                    <span>月</span>
+                    <span class="info-gap"></span>
+                    <span>日</span>
+                </div>
+            </div>
+
+            <!-- 底部签名区域 -->
+            <div class="signature-section">
+                <div class="signature-item">
+                    <span>校长：${student.principalName || ''}</span>
+                    <span>教务主任：${student.directorName || ''}</span>
+                    <span>班主任：${student.teacherName || ''}</span>
                 </div>
             </div>
         </div>

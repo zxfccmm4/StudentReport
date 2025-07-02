@@ -1467,14 +1467,6 @@ section {
     height: 100%;
 }
 
-/* 隐藏“劳动技术”行 */
-/* 注意: 此规则假定“劳动技术”是综合素质评价表格正文(tbody)中的第五行。*/
-/* 如果行的顺序发生变化，此规则可能会隐藏错误的行。*/
-/* 最稳妥的解决方案是直接从生成表格的HTML或JavaScript代码中移除该行。*/
-.evaluation-table tbody tr:nth-child(5) {
-    display: none;
-}
-
 /* 底部签名区域 */
 .signature-section {
     text-align: right;
@@ -1584,4 +1576,56 @@ section {
         color-adjust: exact !important;
         color: #000 !important;
     }
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 40px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+.author-image {
+    width: 60px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 5px;
+    transform: translateY(-2px);
+}
+footer a {
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+footer a:hover {
+    color: var(--accent-blue);
+    text-decoration: underline;
+}
+.social-links {
+    display: flex;
+    gap: 20px;
+    margin: 10px 0;
+}
+.social-links a {
+    display: inline-block;
+    transition: transform 0.2s ease-out;
+}
+.social-links a:hover {
+    transform: translateY(-2px);
+}
+.social-links img {
+    width: 28px;
+    height: 28px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.social-links a:hover img {
+    opacity: 1;
 }
